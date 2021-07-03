@@ -1,0 +1,3 @@
+U entered to sample.txt bro
+start
+end
