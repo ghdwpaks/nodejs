@@ -1,6 +1,8 @@
 var http = require('http');
 var fs = require('fs');
 var url =  require('url');
+
+
 var app = http.createServer(function(request,response){
     var _url = request.url;
     var queryData = url.parse(_url,true).query;//url.parse(_url,true).query이라는 명령어가, url을 분석함
