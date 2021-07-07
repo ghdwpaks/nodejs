@@ -97,8 +97,8 @@ var app = http.createServer(function(request,response){
             console.log(erorr2)
            }
            console.log(topic[0].title);
-           var title = "welcome";
-           var description = "Hello, node.js";
+           var title = topic[0].title;
+           var description = topic[0].description;
            var list = template.list(topics);
            var html = template.HTML(title,list,`<h2>${title}</h2>${description}`,`<a href="/create">create</a>`);
            response.writeHead(200);
