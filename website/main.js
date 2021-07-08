@@ -3,16 +3,9 @@ var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
 var template = require('./lib/template.js');
-var path = require('path');
-var mysql = require('mysql')
-var db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'ghdwpaks',
-  password : 'ghd0327',//1 * 6
-  database : 'ghdweb'
-});
-//db.connect();
-//var sanitizeHtml = require('sanitize-html');
+
+var db = require('./lib/db');
+
 
 
 var app = http.createServer(function(request,response){
