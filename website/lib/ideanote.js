@@ -54,7 +54,7 @@ exports.create_process = function(request,response) {
         })
     });
 }
-exports.else = function(request,response) {
+exports.else = function(request,response,queryData) {
     db.query(`SELECT * FROM ideanote`,function(erorr,ideas){
         if(erorr) {
         }
@@ -74,5 +74,25 @@ exports.else = function(request,response) {
           response.end(html);
         })
       }) 
+}
+exports.delete = function(request,response,queryData) {
+     //ideanote.delete(request,response);
+        
+     var body = '';
+     request.on('data',function(data){
+       body = body + data;
+     });
+     request.on('end',function(){
+       var post = qs.parse(body);
+       db.query(`DELETE FROM ideanote WHERE id = ?`,[queryData.id],function(error, result) {
+         if(error) {
+           console.log("에러가 발생했습니다.")
+           console.log(error)
+           throw error;
+         }
+         response.writeHead(302,{location:`/`});
+         response.end();
+       });
+   });
 }
 
