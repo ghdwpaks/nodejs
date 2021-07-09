@@ -5,10 +5,10 @@ var qs = require('querystring');
 
 exports.home = function(request,response) {
     db.query(`SELECT * FROM ideanote`,function(error,ideas){
-        var title = 'welcome';
-        var description = "hello, node.js";
+        var title = 'title';
+        var description = "description";
         var list = template.list(ideas);
-        var html = template.HTML(title,list,`<h2>${title}</h2>${description}`,`<a href="/create">create</a>`);
+        var html = template.HTML('/',title,list,'',`<a href="/ideanote/create">create</a>`);
         response.writeHead(200);
         response.end(html);
     });
@@ -20,9 +20,9 @@ exports.create = function(request,response) {
         //var description = "hello, node.js";
         //var list = template.list(topics);
         var list = "";
-        var html = template.HTML(title,list,`
+        var html = template.HTML('/',title,list,`
 
-          <form action="/create_process" method="post">
+          <form action="/ideanote/create_process" method="post">
             <p><input type="text" name="title" placeholder="적을 내용"></p>
             <p>
               <input type="submit">
@@ -49,7 +49,7 @@ exports.create_process = function(request,response) {
           if(error) {
             throw error;
           }
-          response.writeHead(302,{location:`/`});
+          response.writeHead(302,{location:`/ideanote`});
           response.end();
         })
     });
@@ -64,9 +64,9 @@ exports.else = function(request,response,queryData) {
           var title = idea[0].title;
           var description = idea[0].description;
           var list = template.list(ideas);
-          var html = template.HTML(title,list,`<h2>${title}</h2>${description}`,`<a href="/create">create</a>
+          var html = template.HTML('/',title,list,`<h2>${title}</h2>${description}`,`<a href="/ideanote/create">create</a>
           
-          <form action="delete_process" method="post">
+          <form action="/ideanote/delete_process" method="post">
             <input type="hidden" name="id" value="${queryData.id}">
             
           </form>`);
@@ -90,7 +90,7 @@ exports.delete = function(request,response,queryData) {
            console.log(error)
            throw error;
          }
-         response.writeHead(302,{location:`/`});
+         response.writeHead(302,{location:`/ideanote`});
          response.end();
        });
    });
