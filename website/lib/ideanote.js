@@ -73,7 +73,7 @@ exports.else = function(request,response,queryData) {
           response.writeHead(200);
           response.end(html);
         })
-      }) 
+    }) 
 }
 exports.delete = function(request,response,queryData) {
      //ideanote.delete(request,response);

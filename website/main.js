@@ -5,6 +5,7 @@ var qs = require('querystring');
 var template = require('./lib/template.js');
 var ideanote = require("./lib/ideanote.js");
 var mainpage = require("./lib/mainpage.js");
+var user = require("./lib/user.js");
 var db = require('./lib/db.js');
 
 
@@ -21,6 +22,12 @@ var app = http.createServer(function(request,response){
       if(queryData.id === undefined) {
         mainpage.home(request,response); 
       }
+    } else if (pathname === '/user/creating_user') {
+      console.log("creating_user 에 진입하였습니다.")
+      user.creating_user(request,response);
+    }  else if (pathname === '/user/creating_user_process') {
+      console.log("creating_user_process 에 진입하였습니다.")
+      user.creating_user_process(request,response);
     } else if (pathname === '/ideanote') {
       console.log("Ideanote 에 진입하였습니다.")
       ideanote.home(request,response);
