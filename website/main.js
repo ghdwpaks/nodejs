@@ -29,6 +29,13 @@ app.post('/ideanote/create_process',function(request,response){
   ideanote.create_process(request,response);
 });
 
+app.post('/ideanote/delete_process/:delete_target_id',function(request,response){
+  console.log("main.js ideanote delete에 진입하였습니다.")
+  var delete_target_id = request.params["delete_target_id"];
+  console.log("main.js delete delete_target_id:",delete_target_id)
+  ideanote.delete(request,response,delete_target_id);
+});
+
 app.listen(3000, function() {
   console.log("진입에 성공했습니다.")
 })

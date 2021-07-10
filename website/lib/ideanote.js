@@ -44,29 +44,7 @@ exports.create = function(request,response) {
 }
 
 exports.create_process = function(request,response) {
-    /*
-    var body = '';
-    request.on('data', function(data){
-        body = body + data;
-    });
-    request.on('end', function(){
-        var post = qs.parse(body);
-        tempqu = `INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,1]
-        console.log("삽입예정 쿼리문 :",tempqu);
-        db.query(`INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,1],function(error,result){
-          if(error) {
-            throw error;
-          }
-          response.writeHead(302,{location:`/ideanote`});
-          response.end();
-        })
-    });
-    */
-    //console.log("create process request :",request)
-    console.log("create process request.body :",request.body)
     var post = request.body;
-    console.log("create process post :",post)
-    console.log("create process post.title :",post.title)
     db.query(`INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,1],function(error,result){
       if(error) {
         throw error;
@@ -74,8 +52,8 @@ exports.create_process = function(request,response) {
       response.writeHead(302,{location:`/ideanote`});
       response.end();
     })
-    
 }
+
 exports.else = function(request,response,queryData) {
     db.query(`SELECT * FROM ideanote`,function(erorr,ideas){
         if(erorr) {
@@ -97,24 +75,17 @@ exports.else = function(request,response,queryData) {
         })
     }) 
 }
-exports.delete = function(request,response,queryData) {
-     //ideanote.delete(request,response);
-        
-     var body = '';
-     request.on('data',function(data){
-       body = body + data;
-     });
-     request.on('end',function(){
-       var post = qs.parse(body);
-       db.query(`DELETE FROM ideanote WHERE id = ?`,[queryData.id],function(error, result) {
-         if(error) {
-           console.log("에러가 발생했습니다.")
-           console.log(error)
-           throw error;
-         }
-         response.writeHead(302,{location:`/ideanote`});
-         response.end();
-       });
-   });
+exports.delete = function(request,response,delete_target_id) {
+    
+
+    db.query(`DELETE FROM ideanote WHERE id = ?`,[delete_target_id],function(error, result) {
+      if(error) {
+        console.log("에러가 발생했습니다.")
+        console.log(error)
+        throw error;
+      }
+      response.writeHead(302,{location:`/ideanote`});
+      response.end();
+    });
 }
 
