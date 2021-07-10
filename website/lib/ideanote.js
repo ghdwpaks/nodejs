@@ -2,6 +2,13 @@ var db = require('./db.js');
 var template = require('./template.js');
 var qs = require('querystring');
 
+var express = require('express');
+var app = express();
+
+//var bodyParser = require('body-parser');
+app.use(express.urlencoded({extended:true}));
+
+
 
 exports.home = function(request,response) {
     db.query(`SELECT * FROM ideanote`,function(error,ideas){
@@ -37,6 +44,7 @@ exports.create = function(request,response) {
 }
 
 exports.create_process = function(request,response) {
+    /*
     var body = '';
     request.on('data', function(data){
         body = body + data;
@@ -53,6 +61,20 @@ exports.create_process = function(request,response) {
           response.end();
         })
     });
+    */
+    //console.log("create process request :",request)
+    console.log("create process request.body :",request.body)
+    var post = request.body;
+    console.log("create process post :",post)
+    console.log("create process post.title :",post.title)
+    db.query(`INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,1],function(error,result){
+      if(error) {
+        throw error;
+      }
+      response.writeHead(302,{location:`/ideanote`});
+      response.end();
+    })
+    
 }
 exports.else = function(request,response,queryData) {
     db.query(`SELECT * FROM ideanote`,function(erorr,ideas){

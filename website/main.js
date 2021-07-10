@@ -8,7 +8,32 @@ var mainpage = require("./lib/mainpage.js");
 var user = require("./lib/user.js");
 var db = require('./lib/db.js');
 
+var express = require('express');
+var { response } = require('express');
+var app = express()
+app.use(express.urlencoded({extended:true}));
 
+app.get('/',function(request,response){
+  mainpage.home(request,response); 
+});
+
+app.get('/ideanote',function(request,response){
+  ideanote.home(request,response); 
+});
+
+app.get('/ideanote/create',function(request,response){
+  ideanote.create(request,response);
+});
+
+app.post('/ideanote/create_process',function(request,response){
+  ideanote.create_process(request,response);
+});
+
+app.listen(3000, function() {
+  console.log("진입에 성공했습니다.")
+})
+
+/*
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
@@ -41,6 +66,6 @@ var app = http.createServer(function(request,response){
 });
 app.listen(3000);
 
-
+*/
 
 
