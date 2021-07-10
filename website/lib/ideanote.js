@@ -15,7 +15,7 @@ exports.home = function(request,response) {
         var title = 'title';
         var description = "description";
         var list = template.list(ideas);
-        var html = template.HTML('/',title,list,'',`<a href="/ideanote/create">create</a>`);
+        var html = template.HTML('/',title,list,'',`<h1><a href="/ideanote/create">create</a></h1>`);
         response.writeHead(200);
         response.end(html);
     });
@@ -40,7 +40,7 @@ exports.create = function(request,response) {
           //`<a href="/create">create</a>`
         response.writeHead(200);
         response.end(html);
-      });
+    });
 }
 
 exports.create_process = function(request,response) {

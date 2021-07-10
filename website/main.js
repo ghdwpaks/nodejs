@@ -1,20 +1,36 @@
-var http = require('http');
-var fs = require('fs');
-var url = require('url');
-var qs = require('querystring');
-var template = require('./lib/template.js');
+
 var ideanote = require("./lib/ideanote.js");
 var mainpage = require("./lib/mainpage.js");
 var user = require("./lib/user.js");
-var db = require('./lib/db.js');
+var login = require("./lib/login.js");
 
 var express = require('express');
+var router = express.Router();
+console.log("main.js router :",router)
 var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));
 
+var session = require('express-session')
+
+app.use(session({
+  HttpOnly : true,
+  secret: "ghdwpaks",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{maxAge:24 * 60 * 60 * 1000}
+}));
+
 app.get('/',function(request,response){
   mainpage.home(request,response); 
+});
+
+app.get('/login',function(request,response){
+  login.loginpage(request,response); 
+});
+
+app.post('/login/login_process',function(request,response){
+  login.loginprocess(request,response); 
 });
 
 app.get('/ideanote',function(request,response){
