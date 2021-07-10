@@ -47,7 +47,7 @@ var app = http.createServer(function(request,response){
       ideanote.home(request,response);
     } else if (pathname === '/ideanote/create') {
       ideanote.create(request,response);
-    }else if(pathname === '/ideanote/create_process'){
+    } else if(pathname === '/ideanote/create_process'){
       ideanote.create_process(request,response);
     } else if(pathname === '/ideanote/delete'){
       ideanote.delete(request,response,queryData);
