@@ -55,8 +55,14 @@ exports.loginprocess = function(request,response) {
                     */
                     console.log("이제 사용자에게 세션을 제공해야합니다.")
                     //login.loginpage(request,response); 
-                    router.serve_login_session_data(request,response)
-                    console.log("loginprocess request.session.id             :",request.session.id)
+                    db.query(`SELECT user_number FROM users WHERE user_id = (?);`,[UserInputId],function(error,usernumber){
+                        if(error) {
+                            throw error;
+                        }
+                        console.log("login loginprocess usernumber[0]['user_number'] :",usernumber[0]['user_number'])
+                        router.serve_login_session_data(request,response,usernumber[0]['user_number'])
+                        //console.log("loginprocess request.session.id             :",request.session.id)
+                    });
                 }
             }
             i++;

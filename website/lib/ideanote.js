@@ -15,7 +15,12 @@ exports.home = function(request,response) {
         var title = 'title';
         var description = "description";
         var list = template.list(ideas);
-        var html = template.HTML('/',title,list,'',`<h1><a href="/ideanote/create">create</a></h1>`);
+        //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        var adds_html1 = ``;
+        if (request.session.user_id != undefined) {
+            adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        }
+        var html = template.HTML('/',title,list,'',adds_html1);
         response.writeHead(200);
         response.end(html);
     });

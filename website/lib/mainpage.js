@@ -8,6 +8,7 @@ exports.home = function(request,response) {
     var title = 'HOMEPAGE';
     var add1 = ``
     console.log("mainpage request.session.user_id :",request.session.user_id)
+    console.log("mainpage request.session.user_number :",request.session.user_number)
     if (request.session.user_id === undefined) {
         add1=`<br><h1><a href="${'/login'}">GO TO LOGIN</a></h1>`
     } else {
