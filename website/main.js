@@ -6,7 +6,7 @@ var login = require("./lib/login.js");
 
 var express = require('express');
 var router = express.Router();
-console.log("main.js router :",router)
+//console.log("main.js router :",router)
 var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));

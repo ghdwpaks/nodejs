@@ -2,6 +2,20 @@ CREATE DATABASE opentutorials;
 
 use opentutorials;
 
+ CREATE TABLE `users` (
+     `user_number` int(11) NOT NULL AUTO_INCREMENT,
+     `user_password` varchar(30) NOT NULL,
+     `user_id` varchar(30) NOT NULL,
+     `user_name` varchar(30) NOT NULL,
+     PRIMARY KEY (`user_number`)
+     ) ENGINE=INNODB CHARSET=utf8;
+
+
+INSERT INTO `users` (user_id,user_password,user_name) VALUES ("ghd","ghd0327","ghdwpaks");
+
+INSERT INTO `users` (user_id,user_password,user_name) VALUES ("홍","홍0327","홍제만");
+
+
 
 CREATE TABLE `users` (
     `username` varchar(30) NOT NULL,
