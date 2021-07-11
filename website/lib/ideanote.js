@@ -11,7 +11,11 @@ app.use(express.urlencoded({extended:true}));
 
 
 exports.home = function(request,response) {
-    db.query(`SELECT * FROM ideanote`,function(error,ideas){
+    console.log("ideanote home request.session :",request.session)
+    console.log("ideanote home request.session.user_number :",request.session.user_number)
+    console.log("ideanote home 삽입 예정 쿼리문 :",`SELECT * FROM ideanote WHERE creater_id = ${request.session.user_number};`)
+    db.query(`SELECT * FROM ideanote WHERE creater_id = ${request.session.user_number};`,function(error,ideas){
+
         var title = 'title';
         var description = "description";
         var list = template.list(ideas);
@@ -26,6 +30,8 @@ exports.home = function(request,response) {
     });
 }
 exports.create = function(request,response) {
+    console.log("ideanote create request.session.user_id :",request.session.user_id)
+    console.log("ideanote create request.session.user_number :",request.session.user_number)
     db.query(`SELECT * FROM ideanote`,function(error,ideas){
         //console.log(topics);
         var title = 'CREATE';
@@ -49,8 +55,11 @@ exports.create = function(request,response) {
 }
 
 exports.create_process = function(request,response) {
+  
+    console.log("ideanote create_process request.session.user_id :",request.session.user_id)
+    console.log("ideanote create_process request.session.user_number :",request.session.user_number)
     var post = request.body;
-    db.query(`INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,1],function(error,result){
+    db.query(`INSERT INTO ideanote (title, timestamp, creater_id) VALUES (?, NOW(),? );`,[post.title,request.session.user_number],function(error,result){
       if(error) {
         throw error;
       }
