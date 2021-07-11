@@ -3,6 +3,7 @@ var ideanote = require("./lib/ideanote.js");
 var mainpage = require("./lib/mainpage.js");
 var user = require("./lib/user.js");
 var login = require("./lib/login.js");
+var logout = require("./lib/logout.js");
 
 var express = require('express');
 var router = express.Router();
@@ -11,7 +12,8 @@ var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));
 
-var session = require('express-session')
+var session = require('express-session');
+const { request } = require("http");
 
 app.use(session({
   HttpOnly : true,
@@ -21,8 +23,12 @@ app.use(session({
   cookie:{maxAge:24 * 60 * 60 * 1000}
 }));
 
-app.get('/',function(request,response){
+app.get('/',function(request,response) {
   mainpage.home(request,response); 
+});
+
+app.get('/logout',function(request,response) {
+  logout.logout_process(request,response);
 });
 
 app.get('/login',function(request,response){
