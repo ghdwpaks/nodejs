@@ -40,14 +40,14 @@ exports.loginprocess = function(request,response) {
         var i = 0
         //console.log("user_list[i]['username'] :",user_list[i]["username"])
         while(i<user_list.length) {
-            if( UserInputId == user_list[i]["username"]) {
+            if( UserInputId == user_list[i]["user_id"]) {
                 /*
                 console.log("아이디 일치 확인됨.")
                 console.log("if 문 내부 UserInputId ",UserInputId)
                 console.log("if 문 내부 user_list[i]['username']",user_list[i]
                 ["username"])
                 */
-                if(UserInputPw == user_list[i]["password"]) {
+                if(UserInputPw == user_list[i]["user_password"]) {
                     /*
                     console.log("비밀번호 일치 확인됨")
                     console.log("if 문 내부 UserInputPw ",UserInputPw)
