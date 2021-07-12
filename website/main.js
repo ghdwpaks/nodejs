@@ -4,6 +4,7 @@ var mainpage = require("./lib/mainpage.js");
 var user = require("./lib/user.js");
 var login = require("./lib/login.js");
 var logout = require("./lib/logout.js");
+var filecontrol = require("./lib/filecontrol.js");
 
 var express = require('express');
 var router = express.Router();
@@ -26,6 +27,15 @@ app.use(session({
 app.get('/',function(request,response) {
   mainpage.home(request,response); 
 });
+
+app.get('/filepage',function(request,response) {
+  filecontrol.uploadpage(request,response);
+});
+
+app.post('/upload_process',function(request,response) {
+  filecontrol.uploadprocess(request,response);
+});
+
 
 app.get('/logout',function(request,response) {
   logout.logout_process(request,response);

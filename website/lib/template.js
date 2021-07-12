@@ -17,7 +17,7 @@ module.exports = {
     </html>
     `;
   },list:function(filelist){
-    var list = '<table>';
+    var list = '<table border="0">';
     var i = 0;
     if (filelist != undefined) {
       list = '<table border="1">';
