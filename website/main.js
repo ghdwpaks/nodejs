@@ -6,6 +6,8 @@ var login = require("./lib/login.js");
 var logout = require("./lib/logout.js");
 var filecontrol = require("./lib/filecontrol.js");
 
+
+
 var express = require('express');
 var router = express.Router();
 //console.log("main.js router :",router)
@@ -13,8 +15,21 @@ var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));
 
+var multer_module = require('multer');
+var _storage = multer_module.diskStorage({
+  destination : function(request,file,cb){
+    cb(null,'files');
+  },
+  filename : function(request,file,cb) {
+    cb(null,String(file.originalname)+String(Date.now()).slice(-6))
+  }
+})
+var upload_module = multer_module({storage:_storage})
+app.use(express.static('files'));
+
 var session = require('express-session');
 const { request } = require("http");
+const multer = require("multer");
 
 app.use(session({
   HttpOnly : true,
@@ -25,14 +40,16 @@ app.use(session({
 }));
 
 app.get('/',function(request,response) {
-  mainpage.home(request,response); 
+  mainpage.home(request,response);
 });
 
 app.get('/filepage',function(request,response) {
   filecontrol.uploadpage(request,response);
 });
 
-app.post('/upload_process',function(request,response) {
+app.post('/upload_process', upload_module.single('userfile'),  function(request,response) {
+  console.log("main app post upload process ",request.file);
+  console.log("now() :",String(Date.now()).slice(-5));
   filecontrol.uploadprocess(request,response);
 });
 

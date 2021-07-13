@@ -9,6 +9,9 @@ var app = express()
 app.use(express.urlencoded({extended:true}));
 var db = require('./db.js');
 
+var multer_module = require('multer');
+var upload_module = multer_module({dest:'uploads/'})
+
 
 exports.uploadpage = function(request,response) {
     console.log("file.js uploadpage 진입함")
@@ -31,7 +34,7 @@ exports.uploadpage = function(request,response) {
 
 exports.uploadprocess = function(request,response) {
     console.log("filecontrol uploadprocess 에 진입하였습니다.")
-    console.log("request :",request)
+    //console.log("request :",request)
 
 
 }
