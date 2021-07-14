@@ -21,7 +21,7 @@ var _storage = multer_module.diskStorage({
     cb(null,'files');
   },
   filename : function(request,file,cb) {
-    cb(null,String(file.originalname)+String(Date.now()).slice(-6))
+    cb(null,(String(file.originalname).split(".")[0])+String(Date.now()).slice(-6)+"."+String(file.originalname).split(".")[1])
   }
 })
 var upload_module = multer_module({storage:_storage})
@@ -48,8 +48,8 @@ app.get('/filepage',function(request,response) {
 });
 
 app.post('/upload_process', upload_module.single('userfile'),  function(request,response) {
-  console.log("main app post upload process ",request.file);
-  console.log("now() :",String(Date.now()).slice(-5));
+  //console.log("main app post upload process ",request.file);
+
   filecontrol.uploadprocess(request,response);
 });
 

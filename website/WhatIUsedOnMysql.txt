@@ -15,7 +15,14 @@ INSERT INTO `users` (user_id,user_password,user_name) VALUES ("ghd","ghd0327","g
 
 INSERT INTO `users` (user_id,user_password,user_name) VALUES ("홍","홍0327","홍제만");
 
-
+CREATE TABLE `filetable` (
+`file_number` int(11) NOT NULL AUTO_INCREMENT,
+`file_creaternumber` int(11) NOT NULL,
+`file_title` varchar(30) NOT NULL,
+`file_content` text NOT NULL,
+`file_filename` varchar(30) NOT NULL,
+PRIMARY KEY (`file_number`)
+) ENGINE=INNODB CHARSET=utf8;
 
 CREATE TABLE `users` (
     `username` varchar(30) NOT NULL,
