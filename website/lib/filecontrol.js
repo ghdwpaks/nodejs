@@ -12,6 +12,23 @@ var db = require('./db.js');
 var multer_module = require('multer');
 var upload_module = multer_module({dest:'uploads/'})
 
+exports.mainpage = function(request,response) {
+    db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number};`,function(error,file_titles){
+
+        var title = 'FILEPAGE';
+        var list = template.filelist(file_titles);
+        //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        var adds_html1 = ``;
+        if (request.session.user_id != undefined) {
+            adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        }
+        var html = template.HTML('/',title,list,'',adds_html1);
+        response.writeHead(200);
+        response.end(html);
+    });
+}
+
+
 
 exports.uploadpage = function(request,response) {
     console.log("file.js uploadpage 진입함")
@@ -22,6 +39,8 @@ exports.uploadpage = function(request,response) {
         <p><input type="text" name="title" placeholder="제목"></p>
         <p><input type="text" name="textcont" placeholder="내용"></p>
         <p><input type="file" name="userfile"></p>
+        <label><input type="radio" name="public_show" value="yes"> 공개</label>
+        <label><input type="radio" name="public_show" value="no"> 비공개</label>
         <p>
             <input type="submit" value="업로드하기">
         </p>
@@ -50,14 +69,16 @@ exports.uploadprocess = function(request,response) {
     console.log("filecontrol uploadprocess content :",content)
     var filename = request.file.filename;
     console.log("filecontrol uploadprocess filename :",filename)
+    var public_show = request.body["public_show"]
+    console.log("filecontrol uploadprocess public_show :",public_show)
     
     console.log("삽입될 쿼리문 :",`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename) VALUES (${creaternumber},${title},${content},${filename});`)
-    db.query(`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename) VALUES (${creaternumber},"${title}","${content}","${filename}");`,function(error,result){
+    db.query(`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename,file_public_able) VALUES (${creaternumber},"${title}","${content}","${filename}","${public_show}");`,function(error,result){
         if(error) {
             throw error;
         }
         console.log("이제 사용자를 홈으로 내보내야합니다.")
-        response.end("<script>alert('success to join');location.href='/';</script>");
+        response.end("<script>alert('sucess to insert file');location.href='/';</script>");
     })
     
 }

@@ -21,6 +21,7 @@ CREATE TABLE `filetable` (
 `file_title` varchar(30) NOT NULL,
 `file_content` text NOT NULL,
 `file_filename` varchar(30) NOT NULL,
+`file_public_able` varchar(30) NOT NULL,
 PRIMARY KEY (`file_number`)
 ) ENGINE=INNODB CHARSET=utf8;
 

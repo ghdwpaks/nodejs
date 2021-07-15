@@ -28,5 +28,17 @@ module.exports = {
     }
     list = list+'</table>';
     return list;
+  },filelist:function(filelist){
+    var list = '<table border="0">';
+    var i = 0;
+    if (filelist != undefined) {
+      list = '<table border="1">';
+      while(i < filelist.length){
+        list = list + `<tr><td><form action="/${filelist[i].file_number}" method="post"><p><input type="submit" value="삭제"></p></form></td></tr>`;
+        i = i + 1;
+      }
+    }
+    list = list+'</table>';
+    return list;
   }
 }
