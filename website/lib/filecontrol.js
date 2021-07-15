@@ -34,7 +34,7 @@ exports.mainpage = function(request,response) {
         });
     } else {
         db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`,function(error,file_titles){
-
+            
             var title = 'FILEPAGE';
             var list = template.filelist(file_titles);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
@@ -51,6 +51,35 @@ exports.mainpage = function(request,response) {
 }
 
 
+
+exports.showdetails = function(request,response,ShowTargetId) {
+    console.log("filecontrol showdetails 에 진입하였습니다.")
+    console.log("filecontrol showdetails request session :",request.session)
+    console.log("filecontrol showdetails ShowTargetId :",ShowTargetId)
+
+    console.log("file.js uploadpage 진입함")
+    var title = 'Upload';
+    var list = "";
+    var html;
+    db.query(`SELECT * FROM filetable WHERE file_number = ${ShowTargetId};`,function(error,datas){
+        console.log("filecontrol showdetails datas :",datas)
+        console.log("filecontrol showdetails datas[0] :",datas[0])
+        console.log("filecontrol showdetails datas[0]['file_title'] :",datas[0]["file_title"])
+        var adds_html1 = `<table border="1">
+        <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
+
+        <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
+        <tr><td>파일</td><td>${datas[0]["file_filename"]}</td></tr>
+
+        </table>
+        `;
+        
+        html = template.HTML('/',title,list,'',adds_html1);
+        response.writeHead(200);
+        response.end(html);
+    });
+
+}
 
 exports.uploadpage = function(request,response) {
     console.log("filecontrol mainpage 에 진입하였습니다.")
@@ -75,6 +104,7 @@ exports.uploadpage = function(request,response) {
     response.writeHead(200);
     response.end(html);
 }
+
 
 exports.uploadprocess = function(request,response) {
     console.log("filecontrol uploadprocess 에 진입하였습니다.")

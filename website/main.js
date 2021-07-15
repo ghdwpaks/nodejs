@@ -51,6 +51,14 @@ app.get('/filepage/create',function(request,response) {
   filecontrol.uploadpage(request,response);
 });
 
+
+app.get('/filepage/ShowDetail/:show_target_id',function(request,response){
+  var ShowTargetId = request.params["show_target_id"];
+  console.log("main ShowTargetId :",ShowTargetId)
+  filecontrol.showdetails(request,response,ShowTargetId);
+});
+
+
 app.post('/upload_process', upload_module.single('userfile'),  function(request,response) {
   //console.log("main app post upload process ",request.file);
 

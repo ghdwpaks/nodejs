@@ -29,22 +29,24 @@ module.exports = {
     list = list+'</table>';
     return list;
   },filelist:function(filelist){
+    console.log("template filelist function filelist :",filelist)
     var list = '<table border="0">';
     var i = 0;
     if (filelist != undefined) {
       list = '<table border="1">';
-      list = list + "<tr><td>제목</td><td>내용</td><td>이동버튼</td>"
+      list = list + "<tr><td>제목</td><td>내용</td>"
       while(i < filelist.length){
         var filecon = ""
         var filetitle = ""
         if (String(filelist[i].file_content).length > 20) {
           filecon = String(filelist[i].file_content).slice(20)+"...";
+        } else {  filecon = String(filelist[i].file_content);}
+        
+        var filetitle = ""
+        if (String(filelist[i].file_title).length > 20) {
           filetitle = String(filelist[i].file_title).slice(20)+"...";
-        } else {
-          filecon = String(filelist[i].file_content);
-          filetitle = String(filelist[i].file_title);
-        }
-        list = list + `<tr><td>${filetitle}</td><td>${filecon}</td><td><form action="/${filelist[i].file_number}" method="post"><p><input type="submit" value="이동하기"></p></form></td></tr>`;
+        } else {filetitle = String(filelist[i].file_title);}
+        list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td></tr>`;
         i = i + 1;
       }
     }
