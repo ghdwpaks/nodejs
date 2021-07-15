@@ -32,7 +32,7 @@ const { request } = require("http");
 const multer = require("multer");
 
 app.use(session({
-  HttpOnly : true,
+  //HttpOnly : true,
   secret: "ghdwpaks",
   resave:false,
   saveUninitialized:true,
@@ -44,6 +44,10 @@ app.get('/',function(request,response) {
 });
 
 app.get('/filepage',function(request,response) {
+  filecontrol.mainpage(request,response);
+});
+
+app.get('/filepage/create',function(request,response) {
   filecontrol.uploadpage(request,response);
 });
 

@@ -11,8 +11,8 @@ module.exports = {
     <body>
       <h1><a href="${href}">HOME</a></h1>
       ${body}
-      ${list}
       ${control}
+      ${list}
     </body>
     </html>
     `;
@@ -33,8 +33,18 @@ module.exports = {
     var i = 0;
     if (filelist != undefined) {
       list = '<table border="1">';
+      list = list + "<tr><td>제목</td><td>내용</td><td>이동버튼</td>"
       while(i < filelist.length){
-        list = list + `<tr><td><form action="/${filelist[i].file_number}" method="post"><p><input type="submit" value="삭제"></p></form></td></tr>`;
+        var filecon = ""
+        var filetitle = ""
+        if (String(filelist[i].file_content).length > 20) {
+          filecon = String(filelist[i].file_content).slice(20)+"...";
+          filetitle = String(filelist[i].file_title).slice(20)+"...";
+        } else {
+          filecon = String(filelist[i].file_content);
+          filetitle = String(filelist[i].file_title);
+        }
+        list = list + `<tr><td>${filetitle}</td><td>${filecon}</td><td><form action="/${filelist[i].file_number}" method="post"><p><input type="submit" value="이동하기"></p></form></td></tr>`;
         i = i + 1;
       }
     }

@@ -13,24 +13,49 @@ var multer_module = require('multer');
 var upload_module = multer_module({dest:'uploads/'})
 
 exports.mainpage = function(request,response) {
-    db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number};`,function(error,file_titles){
+    
+    console.log("filecontrol mainpage 에 진입하였습니다.")
+    console.log("filecontrol mainpage request session :",request.session)
 
-        var title = 'FILEPAGE';
-        var list = template.filelist(file_titles);
-        //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-        var adds_html1 = ``;
-        if (request.session.user_id != undefined) {
-            adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-        }
-        var html = template.HTML('/',title,list,'',adds_html1);
-        response.writeHead(200);
-        response.end(html);
-    });
+
+    if (request.session.user_id === undefined) {
+        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes" ;`,function(error,file_titles){
+
+            var title = 'FILEPAGE';
+            var list = template.filelist(file_titles);
+            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            var adds_html1 = ``;
+            if (request.session.user_id != undefined) {
+                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            }
+            var html = template.HTML('/',title,list,'',adds_html1);
+            response.writeHead(200);
+            response.end(html);
+        });
+    } else {
+        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`,function(error,file_titles){
+
+            var title = 'FILEPAGE';
+            var list = template.filelist(file_titles);
+            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            var adds_html1 = ``;
+            if (request.session.user_id != undefined) {
+                adds_html1 = `<h1><a href="/filepage/create">create</a></h1>`;
+            }
+            var html = template.HTML('/',title,list,'',adds_html1);
+            response.writeHead(200);
+            response.end(html);
+        });
+    }
+    
 }
 
 
 
 exports.uploadpage = function(request,response) {
+    console.log("filecontrol mainpage 에 진입하였습니다.")
+    console.log("filecontrol mainpage request session :",request.session)
+
     console.log("file.js uploadpage 진입함")
     var title = 'Upload';
     var list = "";
@@ -39,7 +64,7 @@ exports.uploadpage = function(request,response) {
         <p><input type="text" name="title" placeholder="제목"></p>
         <p><input type="text" name="textcont" placeholder="내용"></p>
         <p><input type="file" name="userfile"></p>
-        <label><input type="radio" name="public_show" value="yes"> 공개</label>
+        <label><input type="radio" name="public_show" value="yes" checked> 공개</label>
         <label><input type="radio" name="public_show" value="no"> 비공개</label>
         <p>
             <input type="submit" value="업로드하기">
@@ -77,8 +102,12 @@ exports.uploadprocess = function(request,response) {
         if(error) {
             throw error;
         }
+        console.log("filecontrol uploadprocess request session point 2 :",request.session)
         console.log("이제 사용자를 홈으로 내보내야합니다.")
-        response.end("<script>alert('sucess to insert file');location.href='/';</script>");
+        //response.end("<script>alert('sucess to insert file');location.href='/';</script>");
+        //위에 명령어를 이용하면 세션이 지워지는거같음
+        response.writeHead(302,{location:`/filepage`});
+        response.end();
     })
     
 }

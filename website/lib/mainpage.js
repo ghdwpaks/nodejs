@@ -13,7 +13,7 @@ exports.home = function(request,response) {
     console.log("mainpage request.session.user_id :",request.session.user_id)
     console.log("mainpage request.session.user_number :",request.session.user_number)
     if (request.session.user_id === undefined) {
-        add1=`<br><h1><a href="${'/login'}">GO TO LOGIN</a></h1>`
+        add1=`<h1><a href="${'/filepage'}">GO TO FILE TABLES</a></h1>`+`<br><h1><a href="${'/login'}">GO TO LOGIN</a></h1>`
         add2=`<br><h1><a href="${'/user/creating_user'}">GO TO CREATE USER</a></h1>`
     } else {
         add1=`<br><h2>환영합니다. ${request.session.user_name}!</h2>`+`<br><h3><a href="/logout">GO TO LOGOUT</a><h3>`
