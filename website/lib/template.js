@@ -28,7 +28,7 @@ module.exports = {
     }
     list = list+'</table>';
     return list;
-  },filelist:function(filelist){
+  },filelist:function(filelist,username_list){
     console.log("template filelist function filelist :",filelist)
     var list = '<table border="0">';
     var i = 0;

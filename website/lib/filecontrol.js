@@ -20,7 +20,7 @@ exports.mainpage = function(request,response) {
 
     if (request.session.user_id === undefined) {
         db.query(`SELECT * FROM filetable WHERE file_public_able = "yes" ;`,function(error,file_titles){
-
+            console.log("filecontrol mainpage else file_titles :",file_titles)
             var title = 'FILEPAGE';
             var list = template.filelist(file_titles);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
@@ -34,7 +34,29 @@ exports.mainpage = function(request,response) {
         });
     } else {
         db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`,function(error,file_titles){
+            console.log("filecontrol mainpage else file_titles :",file_titles)
+            i = 0;
+            console.log("filecontrol mainpage else typeof(file_titles) :",typeof(file_titles))
+            console.log("filecontorl mainpage file_titles.length :",file_titles.length)
+            file_creaternames = [];
+            //SELECT user_name , user_number FROM users
             
+            while(i < file_titles.length) {
+                
+                
+                db.query(`SELECT user_name , user_number FROM users;`,function(error,username_usernumber){
+                    for (var j = 0; j < username_usernumber.length; j++) {
+                        console.log(`filecontorl mainpage file_titles[${i}]['file_creaternumber'] :`,file_titles[i]['file_creaternumber'])
+                        if(username_usernumber[j]["user_number"] == file_titles[i]["file_creaternumber"]) {
+                            file_creaternames.push(username_usernumber[j]["user_name"])
+                        }
+                    }
+                    
+                });
+                
+                i++;
+            }
+            console.log("filecontorl mainpge file_creaternames :",file_creaternames)
             var title = 'FILEPAGE';
             var list = template.filelist(file_titles);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
@@ -65,18 +87,37 @@ exports.showdetails = function(request,response,ShowTargetId) {
         console.log("filecontrol showdetails datas :",datas)
         console.log("filecontrol showdetails datas[0] :",datas[0])
         console.log("filecontrol showdetails datas[0]['file_title'] :",datas[0]["file_title"])
-        var adds_html1 = `<table border="1">
-        <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
+        var canpass = false;
+        console.log("filecontrol showdetails datas[0]['file_public_able'] == 'no' :",datas[0]["file_public_able"] == "no")
+        if(datas[0]["file_public_able"] == "no") {
+            console.log("filecontrol showdetails datas[0]['file_creaternumber'] == request.session.user_number :",datas[0]["file_creaternumber"] == request.session.user_number)
+            if(datas[0]["file_creaternumber"] == request.session.user_number) {
+                console.log("접근이 허가되었습니다.")
+                canpass = true;
+            }
+        } else {
+            canpass = true;
+        }
 
-        <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
-        <tr><td>파일</td><td>${datas[0]["file_filename"]}</td></tr>
-
-        </table>
-        `;
-        
-        html = template.HTML('/',title,list,'',adds_html1);
-        response.writeHead(200);
-        response.end(html);
+        if (canpass) {
+            InShowdetailsCreaterNumber = datas[0]["file_creaternumber"]
+            db.query(`SELECT * FROM users WHERE user_number = ${InShowdetailsCreaterNumber}`,function(error,datas2){
+                console.log("filecontrol showdetails data2 :",datas2)
+                var adds_html1 = `<table border="1">
+                <tr><td>작성자</td><td>${datas2[0]["user_name"]}</td></tr>
+                <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
+                <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
+                <tr><td>파일</td><td>${datas[0]["file_filename"]}</td></tr>
+                </table>
+                `;
+                
+                html = template.HTML('/',title,list,'',adds_html1);
+                response.writeHead(200);
+                response.end(html);
+            });
+        } else {
+            response.end("<script>alert('Entry denied');location.href='/filepage';</script>");
+        }
     });
 
 }
