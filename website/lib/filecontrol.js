@@ -35,28 +35,33 @@ exports.mainpage = function(request,response) {
     } else {
         db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`,function(error,file_titles){
             console.log("filecontrol mainpage else file_titles :",file_titles)
-            i = 0;
             console.log("filecontrol mainpage else typeof(file_titles) :",typeof(file_titles))
-            console.log("filecontorl mainpage file_titles.length :",file_titles.length)
+            console.log("filecontorl mainpage else file_titles.length :",file_titles.length)
+            console.log("filecontorl mainpage else file_titles[0]['file_creaternumber'] :",file_titles[0]["file_creaternumber"])
+            //console.log("filecontorl mainpage else file_titles[0] :",file_titles[0][])
             file_creaternames = [];
             //SELECT user_name , user_number FROM users
-            
-            while(i < file_titles.length) {
-                
-                
+            var i = 0;
+            for (i = 0; i < file_titles.length; i++){
+                console.log("1i :",i)
                 db.query(`SELECT user_name , user_number FROM users;`,function(error,username_usernumber){
+                    console.log("filcontrol mainpage username_usernumber :",username_usernumber)
+                    console.log("filcontrol mainpage username_usernumber.length :",username_usernumber.length)
                     for (var j = 0; j < username_usernumber.length; j++) {
-                        console.log(`filecontorl mainpage file_titles[${i}]['file_creaternumber'] :`,file_titles[i]['file_creaternumber'])
+                        console.log("j :",j)
+                        console.log("2i :",i)
+                        console.log(`filecontorl mainpage file_titles[${i}]:`,file_titles[i])
                         if(username_usernumber[j]["user_number"] == file_titles[i]["file_creaternumber"]) {
                             file_creaternames.push(username_usernumber[j]["user_name"])
                         }
                     }
                     
                 });
+                console.log("3i :",i)
                 
-                i++;
             }
             console.log("filecontorl mainpge file_creaternames :",file_creaternames)
+            
             var title = 'FILEPAGE';
             var list = template.filelist(file_titles);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
