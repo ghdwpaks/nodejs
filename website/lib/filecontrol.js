@@ -22,37 +22,19 @@ var upload_module = multer_module({dest:'uploads/'})
 
 exports.mainpage = function(request,response) {
     
-    console.log("filecontrol mainpage 에 진입하였습니다.")
-    console.log("filecontrol mainpage request session :",request.session)
 
     if (request.session.user_id === undefined) {
-        console.log("사용자의 세션이 비었음을 판별했습니다.")
-        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_titles){
+        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_ops){
             console.log("filecontrol mainpage if true start point 1")
             if(error) {
                 console.log("에러 발생 지점 3");
                 console.log("error :",error)
             }
-            console.log("filecontrol mainpage else file_titles :",file_titles)
-            var username_list = []
-            
-            for (var i = 0; i < file_titles[0].length; i++) {
-                for (var j = 0; j < file_titles[1].length; j++) {
-                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] :`,file_titles[0][i]["file_creaternumber"])
-                    console.log(`filecontrol mainpage file_titles[1][${j}]["user_number"] :`,file_titles[1][j]["user_number"])
-                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] == file_titles[1][${j}]["user_number"] :`,file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"])
-                    if(file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"]) {
-                        console.log("filecontrol mainpage pushing index :",file_titles[1][j]["user_name"])
-                        username_list.push(file_titles[1][j]["user_name"])
-                    }
-                    console.log()
-                }
-                console.log()
-            }
-            console.log("filecontrol mainpage username_list :",username_list)
+            var username_list = mainpage_part1_setting_creatername(file_ops);
+            var show_public_ops = mainpage_part2_setting_showpublic(file_ops);
             
             var title = 'FILEPAGE';
-            var list = template.filelist(file_titles[0],username_list);
+            var list = template.filelist(file_ops[0],username_list,show_public_ops);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
             var adds_html1 = ``;
             if (request.session.user_id != undefined) {
@@ -63,40 +45,17 @@ exports.mainpage = function(request,response) {
             response.end(html);
         });
     } else {
-        console.log("사용자의 세션이 비지 않았음을 판별했습니다.")
-        console.log("filecontrol mainpage request.session.user_number :",request.session.user_number)
-        console.log("삽입될 쿼리문 :"+`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`)
-        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_titles){
+        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_ops){
             if(error) {
                 console.log("에러 발생 지점 3");
                 console.log("error :",error)
             }
-            console.log("filecontrol mainpage else file_titles :",file_titles)
-            console.log("filecontrol mainpage else file_titles[0] :",file_titles[0])
-            console.log("filecontrol mainpage else file_titles[1] :",file_titles[1])
-
-
             var title = 'FILEPAGE';
-            console.log("filecontrol mainpage file_titles[0].length :",file_titles[0].length)
-            console.log("filecontrol mainpage file_titles[1].length :",file_titles[1].length)
-            var username_list = []
+            var username_list = mainpage_part1_setting_creatername(file_ops);
+            var show_public_ops = mainpage_part2_setting_showpublic(file_ops);
             
-            for (var i = 0; i < file_titles[0].length; i++) {
-                for (var j = 0; j < file_titles[1].length; j++) {
-                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] :`,file_titles[0][i]["file_creaternumber"])
-                    console.log(`filecontrol mainpage file_titles[1][${j}]["user_number"] :`,file_titles[1][j]["user_number"])
-                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] == file_titles[1][${j}]["user_number"] :`,file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"])
-                    if(file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"]) {
-                        console.log("filecontrol mainpage pushing index :",file_titles[1][j]["user_name"])
-                        username_list.push(file_titles[1][j]["user_name"])
-                    }
-                    console.log()
-                }
-                console.log()
-            }
-            console.log("filecontrol mainpage username_list :",username_list)
-            var list = template.filelist(file_titles[0],username_list);
-            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            
+            var list = template.filelist(file_ops[0],username_list,show_public_ops);
             var adds_html1 = ``;
             if (request.session.user_id != undefined) {
                 adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
@@ -108,6 +67,31 @@ exports.mainpage = function(request,response) {
     }
 }
 
+function mainpage_part1_setting_creatername(username_list) {
+    var creatername_list = [];
+    for (var i = 0; i < username_list[0].length; i++) {
+        for (var j = 0; j < username_list[1].length; j++) {
+            if(username_list[0][i]["file_creaternumber"] == username_list[1][j]["user_number"]) {
+                creatername_list.push(username_list[1][j]["user_name"])
+            }
+        }
+    }
+    return creatername_list;
+}
+
+function mainpage_part2_setting_showpublic(file_ops) {
+    var show_public_ops = []
+    for(var i = 0; i < file_ops[0].length; i++) {
+        //show_public_ops.push()
+        if(file_ops[0][i]["file_public_able"] == "yes") {
+            show_public_ops.push("공개")
+        } else {
+            show_public_ops.push("비공개")
+        }
+    }
+
+    return show_public_ops;
+}
 
 
 exports.showdetails = function(request,response,ShowTargetId) {

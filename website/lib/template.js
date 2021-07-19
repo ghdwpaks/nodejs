@@ -28,13 +28,14 @@ module.exports = {
     }
     list = list+'</table>';
     return list;
-  },filelist:function(filelist,username_list){
+  },filelist:function(filelist,username_list,show_public_ops){
     console.log("template filelist function filelist :",filelist)
+    console.log("template filelist show_public_ops :",show_public_ops)
     var list = '<table border="0">';
     var i = 0;
     if (filelist != undefined) {
       list = '<table border="1">';
-      list = list + "<tr><td>제목</td><td>내용</td><td>작성자</td>"
+      list = list + "<tr><td>제목</td><td>내용</td><td>작성자</td><td>공개여부</td>"
       while(i < filelist.length){
         var filecon = ""
         var filetitle = ""
@@ -47,7 +48,7 @@ module.exports = {
           filetitle = String(filelist[i].file_title).slice(20)+"...";
         } else {filetitle = String(filelist[i].file_title);}
 
-        list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td><td>${username_list[i]}</td></tr>`;
+        list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td><td>${username_list[i]}</td><td>${show_public_ops[i]}</td></tr>`;
         i = i + 1;
       }
     }
