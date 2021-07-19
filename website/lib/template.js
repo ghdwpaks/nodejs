@@ -46,6 +46,7 @@ module.exports = {
         if (String(filelist[i].file_title).length > 20) {
           filetitle = String(filelist[i].file_title).slice(20)+"...";
         } else {filetitle = String(filelist[i].file_title);}
+        
         list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td></tr>`;
         i = i + 1;
       }

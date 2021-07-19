@@ -25,28 +25,72 @@ exports.mainpage = function(request,response) {
     console.log("filecontrol mainpage 에 진입하였습니다.")
     console.log("filecontrol mainpage request session :",request.session)
 
+    if (request.session.user_id === undefined) {
+        console.log("사용자의 세션이 비었음을 판별했습니다.")
+        db.query(`SELECT * FROM filetable;SELECT * FROM users;`,function(error,file_titles){
+            if(error) {
+                console.log("에러 발생 지점 3");
+                console.log("error :",error)
+            }
+            console.log("filecontrol mainpage else file_titles :",file_titles)
 
-    db.query(`SELECT * FROM filetable;SELECT * FROM users;`,function(error,file_titles){
-        if(error) {
-            console.log("에러 발생 지점 3");
-            console.log("error :",error)
-        }
-        console.log("filecontrol mainpage else file_titles :",file_titles)
 
 
+            var title = 'FILEPAGE';
+            var list = template.filelist(file_titles);
+            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            var adds_html1 = ``;
+            if (request.session.user_id != undefined) {
+                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            }
+            var html = template.HTML('/',title,list,'',adds_html1);
+            response.writeHead(200);
+            response.end(html);
+        });
+    } else {
+        console.log("사용자의 세션이 비지 않았음을 판별했습니다.")
+        console.log("filecontrol mainpage request.session.user_number :",request.session.user_number)
+        console.log("삽입될 쿼리문 :"+`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`)
+        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_titles){
+            if(error) {
+                console.log("에러 발생 지점 3");
+                console.log("error :",error)
+            }
+            console.log("filecontrol mainpage else file_titles :",file_titles)
+            console.log("filecontrol mainpage else file_titles[0] :",file_titles[0])
+            console.log("filecontrol mainpage else file_titles[1] :",file_titles[1])
 
-        var title = 'FILEPAGE';
-        var list = template.filelist(file_titles);
-        //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-        var adds_html1 = ``;
-        if (request.session.user_id != undefined) {
-            adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-        }
-        var html = template.HTML('/',title,list,'',adds_html1);
-        response.writeHead(200);
-        response.end(html);
-    });
-    
+
+            var title = 'FILEPAGE';
+            console.log("filecontrol mainpage file_titles[0].length :",file_titles[0].length)
+            console.log("filecontrol mainpage file_titles[1].length :",file_titles[1].length)
+            var username_list = []
+            
+            for (var i = 0; i < file_titles[0].length; i++) {
+                for (var j = 0; j < file_titles[1].length; j++) {
+                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] :`,file_titles[0][i]["file_creaternumber"])
+                    console.log(`filecontrol mainpage file_titles[1][${j}]["user_number"] :`,file_titles[1][j]["user_number"])
+                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] == file_titles[1][${j}]["user_number"] :`,file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"])
+                    if(file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"]) {
+                        console.log("filecontrol mainpage pushing index :",file_titles[1][j]["user_name"])
+                        username_list.push(file_titles[1][j]["user_name"])
+                    }
+                    console.log()
+                }
+                console.log()
+            }
+            console.log("filecontrol mainpage username_list :",username_list)
+            var list = template.filelist(file_titles[0]);
+            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            var adds_html1 = ``;
+            if (request.session.user_id != undefined) {
+                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+            }
+            var html = template.HTML('/',title,list,'',adds_html1);
+            response.writeHead(200);
+            response.end(html);
+        });
+    }
 }
 
 
