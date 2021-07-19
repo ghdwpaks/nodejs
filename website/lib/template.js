@@ -34,7 +34,7 @@ module.exports = {
     var i = 0;
     if (filelist != undefined) {
       list = '<table border="1">';
-      list = list + "<tr><td>제목</td><td>내용</td>"
+      list = list + "<tr><td>제목</td><td>내용</td><td>작성자</td>"
       while(i < filelist.length){
         var filecon = ""
         var filetitle = ""
@@ -46,8 +46,8 @@ module.exports = {
         if (String(filelist[i].file_title).length > 20) {
           filetitle = String(filelist[i].file_title).slice(20)+"...";
         } else {filetitle = String(filelist[i].file_title);}
-        
-        list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td></tr>`;
+
+        list = list + `<tr><td><a href="/filepage/ShowDetail/${filelist[i].file_number}">${filetitle}</a></td><td>${filecon}</td><td>${username_list[i]}</td></tr>`;
         i = i + 1;
       }
     }

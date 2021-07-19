@@ -27,17 +27,32 @@ exports.mainpage = function(request,response) {
 
     if (request.session.user_id === undefined) {
         console.log("사용자의 세션이 비었음을 판별했습니다.")
-        db.query(`SELECT * FROM filetable;SELECT * FROM users;`,function(error,file_titles){
+        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_titles){
+            console.log("filecontrol mainpage if true start point 1")
             if(error) {
                 console.log("에러 발생 지점 3");
                 console.log("error :",error)
             }
             console.log("filecontrol mainpage else file_titles :",file_titles)
-
-
-
+            var username_list = []
+            
+            for (var i = 0; i < file_titles[0].length; i++) {
+                for (var j = 0; j < file_titles[1].length; j++) {
+                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] :`,file_titles[0][i]["file_creaternumber"])
+                    console.log(`filecontrol mainpage file_titles[1][${j}]["user_number"] :`,file_titles[1][j]["user_number"])
+                    console.log(`filecontrol mainpage file_titles[0][${i}]["file_creaternumber"] == file_titles[1][${j}]["user_number"] :`,file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"])
+                    if(file_titles[0][i]["file_creaternumber"] == file_titles[1][j]["user_number"]) {
+                        console.log("filecontrol mainpage pushing index :",file_titles[1][j]["user_name"])
+                        username_list.push(file_titles[1][j]["user_name"])
+                    }
+                    console.log()
+                }
+                console.log()
+            }
+            console.log("filecontrol mainpage username_list :",username_list)
+            
             var title = 'FILEPAGE';
-            var list = template.filelist(file_titles);
+            var list = template.filelist(file_titles[0],username_list);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
             var adds_html1 = ``;
             if (request.session.user_id != undefined) {
@@ -80,7 +95,7 @@ exports.mainpage = function(request,response) {
                 console.log()
             }
             console.log("filecontrol mainpage username_list :",username_list)
-            var list = template.filelist(file_titles[0]);
+            var list = template.filelist(file_titles[0],username_list);
             //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
             var adds_html1 = ``;
             if (request.session.user_id != undefined) {
