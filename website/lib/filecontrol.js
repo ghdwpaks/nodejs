@@ -1,4 +1,12 @@
-var db = require('./db.js');
+var mysql = require('mysql');
+var db = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'ghdwpaks',
+    password : 'ghd0327',//1 * 6
+    database : 'ghdweb',
+    multipleStatements : true
+  });
+db.connect();
 var template = require('./template.js');
 var qs = require('querystring')
 var router = require("./router.js")
@@ -7,7 +15,7 @@ var express = require('express');
 var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));
-var db = require('./db.js');
+//var db = require('./db.js');
 
 var multer_module = require('multer');
 var upload_module = multer_module({dest:'uploads/'})
@@ -18,62 +26,26 @@ exports.mainpage = function(request,response) {
     console.log("filecontrol mainpage request session :",request.session)
 
 
-    if (request.session.user_id === undefined) {
-        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes" ;`,function(error,file_titles){
-            console.log("filecontrol mainpage else file_titles :",file_titles)
-            var title = 'FILEPAGE';
-            var list = template.filelist(file_titles);
-            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            var adds_html1 = ``;
-            if (request.session.user_id != undefined) {
-                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            }
-            var html = template.HTML('/',title,list,'',adds_html1);
-            response.writeHead(200);
-            response.end(html);
-        });
-    } else {
-        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";`,function(error,file_titles){
-            console.log("filecontrol mainpage else file_titles :",file_titles)
-            console.log("filecontrol mainpage else typeof(file_titles) :",typeof(file_titles))
-            console.log("filecontorl mainpage else file_titles.length :",file_titles.length)
-            console.log("filecontorl mainpage else file_titles[0]['file_creaternumber'] :",file_titles[0]["file_creaternumber"])
-            //console.log("filecontorl mainpage else file_titles[0] :",file_titles[0][])
-            file_creaternames = [];
-            //SELECT user_name , user_number FROM users
-            var i = 0;
-            for (i = 0; i < file_titles.length; i++){
-                console.log("1i :",i)
-                db.query(`SELECT user_name , user_number FROM users;`,function(error,username_usernumber){
-                    console.log("filcontrol mainpage username_usernumber :",username_usernumber)
-                    console.log("filcontrol mainpage username_usernumber.length :",username_usernumber.length)
-                    for (var j = 0; j < username_usernumber.length; j++) {
-                        console.log("j :",j)
-                        console.log("2i :",i)
-                        console.log(`filecontorl mainpage file_titles[${i}]:`,file_titles[i])
-                        if(username_usernumber[j]["user_number"] == file_titles[i]["file_creaternumber"]) {
-                            file_creaternames.push(username_usernumber[j]["user_name"])
-                        }
-                    }
-                    
-                });
-                console.log("3i :",i)
-                
-            }
-            console.log("filecontorl mainpge file_creaternames :",file_creaternames)
-            
-            var title = 'FILEPAGE';
-            var list = template.filelist(file_titles);
-            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            var adds_html1 = ``;
-            if (request.session.user_id != undefined) {
-                adds_html1 = `<h1><a href="/filepage/create">create</a></h1>`;
-            }
-            var html = template.HTML('/',title,list,'',adds_html1);
-            response.writeHead(200);
-            response.end(html);
-        });
-    }
+    db.query(`SELECT * FROM filetable;SELECT * FROM users;`,function(error,file_titles){
+        if(error) {
+            console.log("에러 발생 지점 3");
+            console.log("error :",error)
+        }
+        console.log("filecontrol mainpage else file_titles :",file_titles)
+
+
+
+        var title = 'FILEPAGE';
+        var list = template.filelist(file_titles);
+        //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        var adds_html1 = ``;
+        if (request.session.user_id != undefined) {
+            adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
+        }
+        var html = template.HTML('/',title,list,'',adds_html1);
+        response.writeHead(200);
+        response.end(html);
+    });
     
 }
 
