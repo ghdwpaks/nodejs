@@ -1,12 +1,5 @@
 var mysql = require('mysql');
-var db = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'ghdwpaks',
-    password : 'ghd0327',//1 * 6
-    database : 'ghdweb',
-    multipleStatements : true
-  });
-db.connect();
+
 var template = require('./template.js');
 var qs = require('querystring')
 var router = require("./router.js")
@@ -15,7 +8,7 @@ var express = require('express');
 var { response } = require('express');
 var app = express()
 app.use(express.urlencoded({extended:true}));
-//var db = require('./db.js');
+var db = require('./db.js');
 
 var multer_module = require('multer');
 var upload_module = multer_module({dest:'uploads/'})
@@ -24,47 +17,39 @@ exports.mainpage = function(request,response) {
     
 
     if (request.session.user_id === undefined) {
-        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_ops){
+        db.query(`SELECT * FROM filetable WHERE file_public_able = "yes" ORDER BY file_number DESC;SELECT user_name , user_number FROM users;`,function(error,file_ops){
             console.log("filecontrol mainpage if true start point 1")
-            if(error) {
-                console.log("에러 발생 지점 3");
-                console.log("error :",error)
-            }
-            var username_list = mainpage_part1_setting_creatername(file_ops);
-            var show_public_ops = mainpage_part2_setting_showpublic(file_ops);
-            
-            var title = 'FILEPAGE';
-            var list = template.filelist(file_ops[0],username_list,show_public_ops);
-            //var adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            var adds_html1 = ``;
-            if (request.session.user_id != undefined) {
-                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            }
-            var html = template.HTML('/',title,list,'',adds_html1);
+            var html = mainpage_part0_entered_code(request,response,error,file_ops)
             response.writeHead(200);
             response.end(html);
         });
     } else {
-        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes";SELECT user_name , user_number FROM users;`,function(error,file_ops){
-            if(error) {
-                console.log("에러 발생 지점 3");
-                console.log("error :",error)
-            }
-            var title = 'FILEPAGE';
-            var username_list = mainpage_part1_setting_creatername(file_ops);
-            var show_public_ops = mainpage_part2_setting_showpublic(file_ops);
-            
-            
-            var list = template.filelist(file_ops[0],username_list,show_public_ops);
-            var adds_html1 = ``;
-            if (request.session.user_id != undefined) {
-                adds_html1 = `<h1><a href="/ideanote/create">create</a></h1>`;
-            }
-            var html = template.HTML('/',title,list,'',adds_html1);
+        db.query(`SELECT * FROM filetable WHERE file_creaternumber = ${request.session.user_number} or file_public_able = "yes" ORDER BY file_number DESC;SELECT user_name , user_number FROM users;`,function(error,file_ops){
+            var html = mainpage_part0_entered_code(request,response,error,file_ops)
             response.writeHead(200);
             response.end(html);
         });
     }
+}
+
+function mainpage_part0_entered_code( request,response, error,file_ops) {
+    if(error) {
+        console.log("에러 발생 지점 3");
+        console.log("error :",error)
+    }
+    var title = 'FILEPAGE';
+    var username_list = mainpage_part1_setting_creatername(file_ops);
+    var show_public_ops = mainpage_part2_setting_showpublic(file_ops);
+    
+    
+    var list = template.filelist(file_ops[0],username_list,show_public_ops);
+    var adds_html1 = ``;
+    if (request.session.user_id != undefined) {
+        adds_html1 = `<h1><a href="/filepage/create">create</a></h1>`;
+    }
+    var html = template.HTML('/',title,list,'',adds_html1);
+    return html;
+
 }
 
 function mainpage_part1_setting_creatername(username_list) {
@@ -150,7 +135,7 @@ exports.uploadpage = function(request,response) {
     var title = 'Upload';
     var list = "";
     var html = template.HTML('/',title,list,`
-        <form action="/upload_process" method="post" enctype="multipart/form-data">
+        <form action="/filepage/upload_process" method="post" enctype="multipart/form-data">
         <p><input type="text" name="title" placeholder="제목"></p>
         <p><input type="text" name="textcont" placeholder="내용"></p>
         <p><input type="file" name="userfile"></p>
@@ -168,25 +153,11 @@ exports.uploadpage = function(request,response) {
 
 
 exports.uploadprocess = function(request,response) {
-    console.log("filecontrol uploadprocess 에 진입하였습니다.")
-    console.log("filecontrol uploadprocess request session :",request.session)
-    console.log("filecontrol uploadprocess request body :",request.body)
-    //console.log("request :",request)
-    //console.log("main app post upload process request",request)
-    console.log("filecontrol uploadprocess request file :",request.file)
-    console.log("filecontrol uploadprocess request body :",request.body)
-    
-    console.log()
     var creaternumber = request.session.user_number;
-    console.log("filecontrol uploadprocess creaternumber :",creaternumber)
     var title = request.body["title"];
-    console.log("filecontrol uploadprocess title :",title)
     var content = request.body["textcont"];
-    console.log("filecontrol uploadprocess content :",content)
     var filename = request.file.filename;
-    console.log("filecontrol uploadprocess filename :",filename)
     var public_show = request.body["public_show"]
-    console.log("filecontrol uploadprocess public_show :",public_show)
     
     console.log("삽입될 쿼리문 :",`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename) VALUES (${creaternumber},${title},${content},${filename});`)
     db.query(`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename,file_public_able) VALUES (${creaternumber},"${title}","${content}","${filename}","${public_show}");`,function(error,result){
@@ -201,4 +172,9 @@ exports.uploadprocess = function(request,response) {
         response.end();
     })
     
+}
+
+exports.downloadprocess = function(request,response){
+
+
 }

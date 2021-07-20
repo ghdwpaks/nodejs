@@ -59,7 +59,7 @@ app.get('/filepage/ShowDetail/:show_target_id',function(request,response){
 });
 
 
-app.post('/upload_process', upload_module.single('userfile'),  function(request,response) {
+app.post('/filepage/upload_process', upload_module.single('userfile'),  function(request,response) {
   //console.log("main app post upload process ",request.file);
 
   filecontrol.uploadprocess(request,response);
