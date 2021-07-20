@@ -112,7 +112,7 @@ exports.showdetails = function(request,response,ShowTargetId) {
                 <tr><td>작성자</td><td>${datas2[0]["user_name"]}</td></tr>
                 <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
                 <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
-                <tr><td>파일</td><td>${datas[0]["file_filename"]}</td></tr>
+                <tr><td>파일</td><td><a href="/filepage/downloadprocess/${datas[0]["file_filename"]}">${datas[0]["file_filename"]}</a></td></tr>
                 </table>
                 `;
                 
@@ -174,7 +174,44 @@ exports.uploadprocess = function(request,response) {
     
 }
 
-exports.downloadprocess = function(request,response){
+exports.downloadprocess = function(request,response,DownloadTargetName){
+    console.log("filecontrol downloadprocess DownloadTargetId :",DownloadTargetName)
+    var DownloadFileStoragePath = "./files"
+    var DownloadFileFullPath =  DownloadFileStoragePath+DownloadTargetName;
+    
+    console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath)
+    console.log("filecontrol downloadprocess request.session :",request.session)
+    console.log("filecontrol downloadprocess request.session.user_id :",request.session.user_id)
+    //if (request.session.user_id)
+    //SELECT * FROM filetable WHERE file_filename = "filetarget1585330.png";
+    db.query(`SELECT * FROM filetable WHERE file_filename = "filetarget1585330.png";`,function(error,result){
+        if(error) {
+            throw error;
+        }
+        console.log("filecontrol downloadprocess db result :",result)
+
+        if(result[0]["file_public_able"] == "yes" ) {
+            console.log("result[0]['file_public_able'] 1:" ,result[0]["file_public_able"])
+            console.log("사용자에게 파일을 제공해도 괜찮습니다.")
+            
+            response.setHeader('Content-disposition','attachment; filename='+filename);
+            response.setHeader('Content-type',)
+        } else {
+            console.log("result[0]['file_public_able'] 2:" ,result[0]["file_public_able"])
+            if(result[0]["file_creaternumber"] == request.session.user_id) {
+                console.log("result[0]['file_creaternumber'] == request.session.user_id :",result[0]["file_creaternumber"] == request.session.user_id)
+                console.log("사용자에게 파일을 제공해도 괜찮습니다.")
+                response.download(DownloadFileStoragePath,DownloadTargetName);
+            }
+        }
 
 
+        response.writeHead(302,{location:`/`});
+        response.end();
+    })
+}
+
+function downloadprocess_part1_get_download(request,response,DownloadFileFullPath) {
+    
+    return show_public_ops;
 }

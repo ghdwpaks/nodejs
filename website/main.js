@@ -58,6 +58,11 @@ app.get('/filepage/ShowDetail/:show_target_id',function(request,response){
   filecontrol.showdetails(request,response,ShowTargetId);
 });
 
+app.get('/filepage/downloadprocess/:download_target_name',function(request,response){
+  var download_target_name = request.params["download_target_name"];
+  console.log("main download_target_name :",download_target_name)
+  filecontrol.downloadprocess(request,response,download_target_name);
+});
 
 app.post('/filepage/upload_process', upload_module.single('userfile'),  function(request,response) {
   //console.log("main app post upload process ",request.file);
