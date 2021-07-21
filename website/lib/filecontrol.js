@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var template = require('./template.js');
 var qs = require('querystring')
 var router = require("./router.js")
-
+var fs = require("fs");
 var express = require('express');
 var { response } = require('express');
 var app = express()
@@ -175,10 +175,21 @@ exports.uploadprocess = function(request,response) {
 }
 
 exports.downloadprocess = function(request,response,DownloadTargetName){
-    console.log("filecontrol downloadprocess DownloadTargetId :",DownloadTargetName)
-    var DownloadFileStoragePath = "./files"
+    console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName)
+    var DownloadFileStoragePath = "./files/"
     var DownloadFileFullPath =  DownloadFileStoragePath+DownloadTargetName;
-    
+    var DownloadTargetType = String(DownloadTargetName).split(".")[1];
+    console.log("1")
+    console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
+    console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
+    console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
+
+    response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
+    response.setHeader('Content-type',DownloadTargetType);
+    var filestream = fs.createReadStream(DownloadFileFullPath);
+    filestream.pipe(response);
+    console.log("1")
+
     console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath)
     console.log("filecontrol downloadprocess request.session :",request.session)
     console.log("filecontrol downloadprocess request.session.user_id :",request.session.user_id)
@@ -194,14 +205,22 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
             console.log("result[0]['file_public_able'] 1:" ,result[0]["file_public_able"])
             console.log("사용자에게 파일을 제공해도 괜찮습니다.")
             
-            response.setHeader('Content-disposition','attachment; filename='+filename);
-            response.setHeader('Content-type',)
+            console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
+            console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
+            console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
+
+            response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
+            response.setHeader('Content-type',DownloadTargetType);
+            var filestream = fs.createReadStream(DownloadFileFullPath);
+            filestream.pipe(response);
+
+            //response.sendFile(DownloadFileFullPath)
         } else {
             console.log("result[0]['file_public_able'] 2:" ,result[0]["file_public_able"])
             if(result[0]["file_creaternumber"] == request.session.user_id) {
                 console.log("result[0]['file_creaternumber'] == request.session.user_id :",result[0]["file_creaternumber"] == request.session.user_id)
                 console.log("사용자에게 파일을 제공해도 괜찮습니다.")
-                response.download(DownloadFileStoragePath,DownloadTargetName);
+                
             }
         }
 

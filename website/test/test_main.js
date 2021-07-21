@@ -7,6 +7,8 @@ var connection = mysql.createConnection({
   multipleStatements : true
 });
 
+var fs = require("fs");
+
 var express = require('express');
 
 var app = express()
@@ -28,6 +30,39 @@ app.get('/',function(request,response) {
         response.end(html)
     });
 });
+
+app.get("/d/:dtn",function(request,response){
+  //filetarget1251145.png
+  var dtn = request.params["dtn"];//download target name
+  var dtt = request.params["dtn"].split(".")[1];//download traget type
+  console.log("dtt :",dtt)
+  console.log("dtn :",dtn)
+  var html = `${dtn}`;
+  var downloadfolderpath = `../files/`;
+  var downloadfilepullpath = downloadfolderpath+dtn;
+  
+  //res.sendFile('index.html',{root:__dirname});
+
+  //response.sendFile(dtn,{root:"/files/"})
+  //response.sendFile(downloadroot);
+  //res.sendFile('path-to-file');
+
+  //response.download(downloadfolderpath,dtn)
+
+
+  console.log("dtn :",dtn)
+  console.log("dtt :",dtt)
+  console.log("downloadfilepullpath :",downloadfilepullpath)
+
+  response.setHeader('Content-disposition','attachment; filename='+dtn);
+  response.setHeader('Content-type',dtt)
+  var filestream = fs.createReadStream(downloadfilepullpath);
+  filestream.pipe(response);
+
+
+  response.writeHead(200);
+  response.end(html)
+})
 
 app.listen(5151, function() {
 console.log("진입에 성공했습니다.")
