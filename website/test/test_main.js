@@ -39,24 +39,16 @@ app.get("/d/:dtn",function(request,response){
   console.log("dtn :",dtn)
   var html = `${dtn}`;
   var downloadfolderpath = `../files/`;
-  var downloadfilepullpath = downloadfolderpath+dtn;
+  var downloadfilefullpath = downloadfolderpath+dtn;
   
-  //res.sendFile('index.html',{root:__dirname});
-
-  //response.sendFile(dtn,{root:"/files/"})
-  //response.sendFile(downloadroot);
-  //res.sendFile('path-to-file');
-
-  //response.download(downloadfolderpath,dtn)
-
-
+  
   console.log("dtn :",dtn)
   console.log("dtt :",dtt)
-  console.log("downloadfilepullpath :",downloadfilepullpath)
+  console.log("downloadfilefullpath :",downloadfilefullpath)
 
   response.setHeader('Content-disposition','attachment; filename='+dtn);
   response.setHeader('Content-type',dtt)
-  var filestream = fs.createReadStream(downloadfilepullpath);
+  var filestream = fs.createReadStream(downloadfilefullpath);
   filestream.pipe(response);
 
 

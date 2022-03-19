@@ -139,6 +139,7 @@ exports.uploadpage = function(request,response) {
         <p><input type="text" name="title" placeholder="제목"></p>
         <p><input type="text" name="textcont" placeholder="내용"></p>
         <p><input type="file" name="userfile"></p>
+        <h3>20자 이상의 큰 파일 이름을 쓰지 마세요</h3>
         <label><input type="radio" name="public_show" value="yes" checked> 공개</label>
         <label><input type="radio" name="public_show" value="no"> 비공개</label>
         <p>
@@ -158,7 +159,13 @@ exports.uploadprocess = function(request,response) {
     var content = request.body["textcont"];
     var filename = request.file.filename;
     var public_show = request.body["public_show"]
-    
+    //파일 이름이 너무 길어서 sql 문에 들어가지 않는 오류가 발생함
+    //`file_filename` varchar(30) NOT NULL,
+    if (filename.length > 30) {
+        var tmp_str_head = filename.substr(0,17)
+        var tmp_str_tail = filename.substr(filename.length-12,filename.length) // 파일 형식 저장용도
+        filename = tmp_str_head + tmp_str_tail
+    }
     console.log("삽입될 쿼리문 :",`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename) VALUES (${creaternumber},${title},${content},${filename});`)
     db.query(`INSERT INTO filetable ( file_creaternumber,file_title,file_content,file_filename,file_public_able) VALUES (${creaternumber},"${title}","${content}","${filename}","${public_show}");`,function(error,result){
         if(error) {
@@ -176,10 +183,11 @@ exports.uploadprocess = function(request,response) {
 
 exports.downloadprocess = function(request,response,DownloadTargetName){
     console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName)
-    var DownloadFileStoragePath = "./files/"
+    var DownloadFileStoragePath = "files/"
     var DownloadFileFullPath =  DownloadFileStoragePath+DownloadTargetName;
     var DownloadTargetType = String(DownloadTargetName).split(".")[1];
     console.log("1")
+    //console.log("filecontrol downloadprocess fs :",fs);
     console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
     console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
     console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
