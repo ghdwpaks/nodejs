@@ -108,14 +108,16 @@ exports.showdetails = function(request,response,ShowTargetId) {
 
         if (canpass) {
             InShowdetailsCreaterNumber = datas[0]["file_creaternumber"]
+            
             db.query(`SELECT * FROM users WHERE user_number = ${InShowdetailsCreaterNumber}`,function(error,datas2){
-                console.log("filecontrol showdetails data2 :",datas2)
-                
+                insert_file_download_able(datas,datas[0]["file_number"])
+                console.log("filecontrol showdetails data2 :",datas)
+                console.log("filecontrol showdetails datas2[0]['download_able'] :",datas[0]["download_able"])
                 var download_able = ""
-                if (datas2[0]["download_able"] == "yes") {
+                if (datas[0]["download_able"] == "true") {
                     download_able = '가능'
-                } else if(datas2[0]["download_able"] == "") {
-                    download_able = '미확인'
+                } else if(datas[0]["download_able"] == "false") {
+                    download_able = '불가능'
                 } else {
                     download_able = '미확인'
 
@@ -142,11 +144,20 @@ exports.showdetails = function(request,response,ShowTargetId) {
 }
 
 
-function insert_file_download_able(InShowdetailsCreaterNumber) {
-    db.query(`SELECT * FROM users WHERE user_number = ${InShowdetailsCreaterNumber}`,function(error,datas2){
-        
+function insert_file_download_able(datas,file_number) {
+    const loc = "files/"+datas[0]["file_filename"]
+    console.log(`insert_file_download_able ${loc} :`,loc)
+    const d_able = (fs.existsSync(loc)).toString();
+    console.log("insert_file_download_able d_able :",d_able);
+    //SELECT download_able FROM filetable WHERE file_number = 35;
+    //
+    db.query(`UPDATE filetable SET download_able = "${d_able}" WHERE file_number = ${file_number} ;`,function(error){
+        console.log("파일이 로컬저장소에 정상적으로 위치하는지에 대한 여부가 확인됐습니다.")
     });
-    
+    db.query(`SELECT download_able FROM filetable WHERE file_number = ${file_number};`,function(error,data){
+        console.log("파일이 로컬저장소에 정상적으로 위치하는지에 대한 여부가 확인됐습니다.")
+        console.log('insert_file_download_able data[0]["download_able"] :',data[0]["download_able"])
+    });
 }
 
 exports.uploadpage = function(request,response) {

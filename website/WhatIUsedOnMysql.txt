@@ -64,7 +64,7 @@ SHOW processlist;
 SHOW DATABASES;
 USE ghdweb;
 SHOW TABLE STATUS;
-SELECT * FROM filetable;
+SELECT * FROM filetable; 
 
 파일다운로드가능 여부에 관한 컬럼인 download_able 항목 추가
 Add a download_able entry in the file downloadable column
