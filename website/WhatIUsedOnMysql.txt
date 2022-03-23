@@ -55,3 +55,18 @@ INSERT INTO `topic` VALUES (5,'MongoDB','MongoDB is ...','2018-01-30 12:31:03',1
 CREATE USER 'nodejs'@'%' IDENTIFIED BY '111111';
 GRANT ALL PRIVILEGES ON opentutorials.* TO 'nodejs'@'%';
  FLUSH PRIVILEGES;
+
+
+기존에 사용하던 ghdweb DB 가져오기
+Get the existing ghdweb db
+SHOW processlist;
+#SELECT * FROM ghdweb;
+SHOW DATABASES;
+USE ghdweb;
+SHOW TABLE STATUS;
+SELECT * FROM filetable;
+
+파일다운로드가능 여부에 관한 컬럼인 download_able 항목 추가
+Add a download_able entry in the file downloadable column
+ALTER TABLE filetable ADD download_able VARCHAR(30) NOT NULL;
+

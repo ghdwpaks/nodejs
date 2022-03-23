@@ -79,6 +79,8 @@ function mainpage_part2_setting_showpublic(file_ops) {
 }
 
 
+
+
 exports.showdetails = function(request,response,ShowTargetId) {
     console.log("filecontrol showdetails 에 진입하였습니다.")
     console.log("filecontrol showdetails request session :",request.session)
@@ -108,11 +110,23 @@ exports.showdetails = function(request,response,ShowTargetId) {
             InShowdetailsCreaterNumber = datas[0]["file_creaternumber"]
             db.query(`SELECT * FROM users WHERE user_number = ${InShowdetailsCreaterNumber}`,function(error,datas2){
                 console.log("filecontrol showdetails data2 :",datas2)
+                
+                var download_able = ""
+                if (datas2[0]["download_able"] == "yes") {
+                    download_able = '가능'
+                } else if(datas2[0]["download_able"] == "") {
+                    download_able = '미확인'
+                } else {
+                    download_able = '미확인'
+
+                }
+
                 var adds_html1 = `<table border="1">
                 <tr><td>작성자</td><td>${datas2[0]["user_name"]}</td></tr>
                 <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
                 <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
                 <tr><td>파일</td><td><a href="/filepage/downloadprocess/${datas[0]["file_filename"]}">${datas[0]["file_filename"]}</a></td></tr>
+                <tr><td>파일다운로드가능여부</td><td>`+download_able+`</td></tr>
                 </table>
                 `;
                 
@@ -125,6 +139,14 @@ exports.showdetails = function(request,response,ShowTargetId) {
         }
     });
 
+}
+
+
+function insert_file_download_able(InShowdetailsCreaterNumber) {
+    db.query(`SELECT * FROM users WHERE user_number = ${InShowdetailsCreaterNumber}`,function(error,datas2){
+        
+    });
+    
 }
 
 exports.uploadpage = function(request,response) {
