@@ -70,3 +70,8 @@ SELECT * FROM filetable;
 Add a download_able entry in the file downloadable column
 ALTER TABLE filetable ADD download_able VARCHAR(30) NOT NULL;
 
+파일다운로드가능 여부 관련에 쓰인 일회용 쿼리문들
+Disposable query statements related to file downloadability
+set sql_safe_updates=0;
+UPDATE filetable SET download_able = "false" WHERE file_number = 35 ;
+SELECT download_able FROM filetable WHERE file_number = 35;

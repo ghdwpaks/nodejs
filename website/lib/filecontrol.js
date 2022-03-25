@@ -114,20 +114,23 @@ exports.showdetails = function(request,response,ShowTargetId) {
                 console.log("filecontrol showdetails data2 :",datas)
                 console.log("filecontrol showdetails datas2[0]['download_able'] :",datas[0]["download_able"])
                 var download_able = ""
+                var a_tag_able = ""
                 if (datas[0]["download_able"] == "true") {
+                    a_tag_able = `<a href="/filepage/downloadprocess/${datas[0]["file_filename"]}">${datas[0]["file_filename"]}</a>`
                     download_able = '가능'
                 } else if(datas[0]["download_able"] == "false") {
+                    a_tag_able = `${datas[0]["file_filename"]}`
                     download_able = '불가능'
                 } else {
+                    a_tag_able = `${datas[0]["file_filename"]}`
                     download_able = '미확인'
-
                 }
 
                 var adds_html1 = `<table border="1">
                 <tr><td>작성자</td><td>${datas2[0]["user_name"]}</td></tr>
                 <tr><td>제목</td><td>${datas[0]["file_title"]}</td></tr>
                 <tr><td>내용</td><td>${datas[0]["file_content"]}</td></tr>
-                <tr><td>파일</td><td><a href="/filepage/downloadprocess/${datas[0]["file_filename"]}">${datas[0]["file_filename"]}</a></td></tr>
+                <tr><td>파일</td><td>`+a_tag_able+`</td></tr>
                 <tr><td>파일다운로드가능여부</td><td>`+download_able+`</td></tr>
                 </table>
                 `;
@@ -236,7 +239,8 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
     console.log("filecontrol downloadprocess request.session.user_id :",request.session.user_id)
     //if (request.session.user_id)
     //SELECT * FROM filetable WHERE file_filename = "filetarget1585330.png";
-    db.query(`SELECT * FROM filetable WHERE file_filename = "filetarget1585330.png";`,function(error,result){
+    console.log("filecontrol downloadprocess 입력될 쿼리문 :",`SELECT * FROM filetable WHERE file_filename = "`+DownloadTargetName+`";`)
+    db.query(`SELECT * FROM filetable WHERE file_filename = "`+DownloadTargetName+`";`,function(error,result){
         if(error) {
             throw error;
         }
