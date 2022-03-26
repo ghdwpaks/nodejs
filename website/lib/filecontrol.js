@@ -226,15 +226,11 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
     //console.log("filecontrol downloadprocess fs :",fs);
     console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
     console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
-    console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
+    console.log("filecontrol downloadprocess DownloadFileFullPath 1:",DownloadFileFullPath);
 
-    response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
-    response.setHeader('Content-type',DownloadTargetType);
-    var filestream = fs.createReadStream(DownloadFileFullPath);
-    filestream.pipe(response);
     console.log("1")
 
-    console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath)
+    console.log("filecontrol downloadprocess DownloadFileFullPath 2:",DownloadFileFullPath)
     console.log("filecontrol downloadprocess request.session :",request.session)
     console.log("filecontrol downloadprocess request.session.user_id :",request.session.user_id)
     //if (request.session.user_id)
@@ -245,23 +241,25 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
             throw error;
         }
         console.log("filecontrol downloadprocess db result :",result)
-
+        console.log('result[0]["file_public_able"] :',result[0]["file_public_able"])
         if(result[0]["file_public_able"] == "yes" ) {
             console.log("result[0]['file_public_able'] 1:" ,result[0]["file_public_able"])
             console.log("사용자에게 파일을 제공해도 괜찮습니다. 1")
             
             console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
             console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
-            console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
+            console.log("filecontrol downloadprocess DownloadFileFullPath 3:",DownloadFileFullPath);
             /*
 
             response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
             response.setHeader('Content-type',DownloadTargetType);
             */
-            var filestream = fs.createReadStream(DownloadFileFullPath);
-            filestream.pipe(response);
-
+            //response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
+            //response.setHeader('Content-type',DownloadTargetType);
+            //response.download(DownloadFileFullPath, DownloadTargetName);
             //response.sendFile(DownloadFileFullPath)
+            
+            get_download_file(response,request,DownloadTargetName,DownloadFileFullPath,DownloadTargetType)
         } else {
             console.log("result[0]['file_public_able'] 2:" ,result[0]["file_public_able"])
             if(result[0]["file_creaternumber"] == request.session.user_id) {
@@ -271,17 +269,30 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
                 response.setHeader('Content-Disposition', `attachment; filename=${DownloadFileFullPath}`); // 이게 핵심 
                 response.sendFile(DownloadTargetName);
                 */
-                response.download(DownloadFileFullPath, DownloadTargetName);
+                get_download_file(response,request,DownloadTargetName,DownloadFileFullPath,DownloadTargetType)
             }
         }
 
-
-        response.writeHead(302,{location:`/`});
-        response.end();
+        //response.writeHead(302,{location:`/`});
+        //response.end();
     })
 }
 
-function downloadprocess_part1_get_download(request,response,DownloadFileFullPath) {
+function get_download_file(res,req,dtn,dffp,dtt) {
+    console.log("get_download_file dtn :",dtn)
+    dffp = "C:/workspace/nodejs/website/"+dffp
+    console.log("get_download_file dffp :",dffp)
+    console.log("get_download_file dtt :",dtt)
     
-    return show_public_ops;
+    res.setHeader('Content-Disposition', `attachment; filename=${dtn}`); // 이게 핵심 
+    console.log("get_download_file 1")
+    res.writeHead(302,{location:`/`});
+    console.log("get_download_file 2")
+    res.sendFile(dffp);
+    console.log("get_download_file 3")
+    res.end();
+    console.log("get_download_file 4")
+    //const file = fs.createWriteStream(dffp);
+    //res.pipe(file);
+
 }

@@ -51,6 +51,8 @@ https://stackoverflow.com/questions/7288814/download-a-file-from-nodejs-server-u
 https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=hyoun1202&logNo=220675944242
 https://whichmean.tistory.com/6
 https://www.zerocho.com/category/NodeJS/post/60778f07cf47fe0004727b12
+http://daplus.net/javascript-node-js%EB%A1%9C-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95-%ED%83%80%EC%82%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC/
+https://fierycoding.tistory.com/85?category=928039
 
 
 (완성)다운로드 불가능 파일에 대해서 실수로 눌렀을때 서버가 다운되는것을 방지하기 위해 (*try catch 단을 새로 만들어주기 - 변경) 다운로드 하지 못하게 다운로드 되는 <a>태그 링크를 일반 평문으로 바꾸기
