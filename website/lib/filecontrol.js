@@ -248,14 +248,16 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
 
         if(result[0]["file_public_able"] == "yes" ) {
             console.log("result[0]['file_public_able'] 1:" ,result[0]["file_public_able"])
-            console.log("사용자에게 파일을 제공해도 괜찮습니다.")
+            console.log("사용자에게 파일을 제공해도 괜찮습니다. 1")
             
             console.log("filecontrol downloadprocess DownloadTargetType :",DownloadTargetType);
             console.log("filecontrol downloadprocess DownloadTargetName :",DownloadTargetName);
             console.log("filecontrol downloadprocess DownloadFileFullPath :",DownloadFileFullPath);
+            /*
 
             response.setHeader('Content-disposition','attachment; filename='+DownloadTargetName);
             response.setHeader('Content-type',DownloadTargetType);
+            */
             var filestream = fs.createReadStream(DownloadFileFullPath);
             filestream.pipe(response);
 
@@ -264,8 +266,12 @@ exports.downloadprocess = function(request,response,DownloadTargetName){
             console.log("result[0]['file_public_able'] 2:" ,result[0]["file_public_able"])
             if(result[0]["file_creaternumber"] == request.session.user_id) {
                 console.log("result[0]['file_creaternumber'] == request.session.user_id :",result[0]["file_creaternumber"] == request.session.user_id)
-                console.log("사용자에게 파일을 제공해도 괜찮습니다.")
-                
+                console.log("사용자에게 파일을 제공해도 괜찮습니다. 2")
+                /*
+                response.setHeader('Content-Disposition', `attachment; filename=${DownloadFileFullPath}`); // 이게 핵심 
+                response.sendFile(DownloadTargetName);
+                */
+                response.download(DownloadFileFullPath, DownloadTargetName);
             }
         }
 

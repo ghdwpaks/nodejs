@@ -16,4 +16,3 @@ exports.serve_login_session_data = function(request,response,user_number,user_na
     //console.log("request.session.id === request.body['id'] :",request.session.id === request.body["id"])
     //response.render('/', {"user_id" : request.session.id});
 }
-

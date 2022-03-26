@@ -41,19 +41,20 @@ MySQL workbench에서의 작업환경 재구축에 성공함. 사용된 명령�
 
 
 작업목표
-파일 다운로드 가능하게 해놓기. 지금 보면 filecontrol.js 파일에 downloadprocess 문단을 보면 다운로드 직전까지 모든 자격증명을 위한 절차를 진행하고서 실질적인 다운로드를 진행하는곳을 안만들어놨다.
 01오류처럼 편의성 부분 개선
 로컬 저장소에 저장돼있는 파일들중에 쓸모없는게 뭐가 있는지 검사하고 식별하는 개발자용 기능 제작하기
+
+파일 다운로드 가능하게 해놓기. 지금 보면 filecontrol.js 파일에 downloadprocess 문단을 보면 다운로드 직전까지 모든 자격증명을 위한 절차를 진행하고서 실질적인 다운로드를 진행하는곳을 안만들어놨다.
+참고자료
+https://avengersrhydon1121.tistory.com/150
+https://stackoverflow.com/questions/7288814/download-a-file-from-nodejs-server-using-express
+https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=hyoun1202&logNo=220675944242
+https://whichmean.tistory.com/6
+https://www.zerocho.com/category/NodeJS/post/60778f07cf47fe0004727b12
+
+
 (완성)다운로드 불가능 파일에 대해서 실수로 눌렀을때 서버가 다운되는것을 방지하기 위해 (*try catch 단을 새로 만들어주기 - 변경) 다운로드 하지 못하게 다운로드 되는 <a>태그 링크를 일반 평문으로 바꾸기
 (완성)파일 다운로드 가능 여부에 대해서, 사용자에게 미리 공지하는 부분의 제작 및 개선
-
-
-
-
-
-
-
-
 
 
 hello world!
