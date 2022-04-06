@@ -1,3 +1,4 @@
+/*
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -59,3 +60,64 @@ app.get("/d/:dtn",function(request,response){
 app.listen(5151, function() {
 console.log("진입에 성공했습니다.")
 })
+*/
+
+
+
+
+
+
+var downloader = require("./test_2downloader.js");
+
+
+
+var express = require('express');
+var router = express.Router();
+//console.log("main.js router :",router)
+var { response } = require('express');
+var app = express()
+app.use(express.urlencoded({extended:true}));
+
+var multer_module = require('multer');
+var _storage = multer_module.diskStorage({
+  destination : function(request,file,cb){9
+    cb(null,'files');
+  },
+  filename : function(request,file,cb) {
+    cb(null,(String(file.originalname).split(".")[0])+String(Date.now()).slice(-6)+"."+String(file.originalname).split(".")[1])
+  }
+})
+var upload_module = multer_module({storage:_storage})
+app.use(express.static('files'));
+
+var session = require('express-session');
+const { request } = require("http");
+const multer = require("multer");
+
+app.use(session({
+  //HttpOnly : true,
+  secret: "ghdwpaks",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{maxAge:24 * 60 * 60 * 1000}
+}));
+
+app.get('/',function(request,response) {
+  console.log("/ 에 진입했습니다.")
+});
+
+app.get("/ghd",function(req,res,next){
+  res.download("./","pic1.png")
+})
+
+app.get('/download', function(req, res){
+  const file = `./pic1.png`;
+  res.download(file); // Set disposition and send it.
+});
+
+
+
+app.listen(3000, function() {
+  console.log("진입에 성공했습니다.")
+})
+

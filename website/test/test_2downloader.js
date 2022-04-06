@@ -5,7 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var mime = require('mime');
 
-router.get('/:file_name', function(req, res, next) {
+router.get('/:file_name', function(req, res) {
   var upload_folder = '업로드 폴더 경로';
   var file = upload_folder + req.params.file_name; // ex) /upload/files/sample.txt
   
